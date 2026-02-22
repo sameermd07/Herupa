@@ -1,14 +1,29 @@
 {
   "manifest_version": 3,
-  "name": "CodeMentor – Socratic LeetCode Helper",
-  "version": "1.0",
-  "description": "AI mentor that guides you to solve problems yourself. Never gives answers, only asks the right questions.",
+  "name": "Herupa – Socratic DSA Helper",
+  "version": "2.0",
+  "description": "AI mentor for LeetCode & TakeUForward. Guides you to solve problems yourself through Socratic questioning.",
   "permissions": ["activeTab", "scripting", "storage"],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   },
-  "content_scripts": [{
-    "matches": ["https://leetcode.com/problems/*"],
-    "js": ["content.js"]
-  }]
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://leetcode.com/problems/*",
+        "https://takeuforward.org/plus/dsa/problems/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
 }

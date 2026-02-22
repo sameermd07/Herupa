@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>CodeMentor</title>
+  <title>Herupa</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Unbounded:wght@700;900&display=swap');
 
@@ -45,373 +45,311 @@
       justify-content: space-between;
       flex-shrink: 0;
     }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    .header-left { display: flex; align-items: center; gap: 10px; }
     .logo {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Unbounded', sans-serif;
-      font-weight: 900;
-      font-size: 11px;
-      color: #fff;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: 11px;
+      color: #fff; flex-shrink: 0;
     }
-
-    .header-info {}
     .header-title {
-      font-family: 'Unbounded', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: 0.5px;
+      font-family: 'Unbounded', sans-serif; font-size: 11px;
+      font-weight: 700; color: var(--accent); letter-spacing: 0.5px;
     }
     .problem-name {
-      font-size: 10px;
-      color: var(--muted);
-      margin-top: 1px;
-      max-width: 260px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      font-size: 10px; color: var(--muted); margin-top: 1px;
+      max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-
-    /* attempt counter */
-    .attempt-badge {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 3px;
-    }
-    .attempt-label {
-      font-size: 9px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .attempt-dots {
-      display: flex;
-      gap: 4px;
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      border: 1px solid var(--muted);
-      background: transparent;
-      transition: all 0.3s;
-    }
-    .dot.used { background: var(--warn); border-color: var(--warn); }
+    .attempt-badge { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+    .attempt-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .attempt-dots { display: flex; gap: 4px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--muted); background: transparent; transition: all 0.3s; }
+    .dot.used   { background: var(--warn);    border-color: var(--warn); }
     .dot.pseudo { background: var(--accent2); border-color: var(--accent2); }
+
+    /* settings gear in header */
+    #settings-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); width: 28px; height: 28px; border-radius: 6px;
+      cursor: pointer; font-size: 13px; display: flex; align-items: center;
+      justify-content: center; transition: all 0.15s; flex-shrink: 0;
+    }
+    #settings-btn:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── Context bar ── */
     #context-bar {
-      padding: 8px 16px;
-      background: #050810;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-      display: none;
+      padding: 8px 16px; background: #050810;
+      border-bottom: 1px solid var(--border); flex-shrink: 0; display: none;
     }
-    .ctx-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    .ctx-row { display: flex; align-items: center; justify-content: space-between; }
     .ctx-pill {
-      font-size: 9px;
-      padding: 2px 8px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
+      font-size: 9px; padding: 2px 8px; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
     }
-    .ctx-pill.easy { background: #052010; color: var(--success); border: 1px solid #0a3a1a; }
-    .ctx-pill.medium { background: #1a1500; color: var(--warn); border: 1px solid #2a2000; }
-    .ctx-pill.hard { background: #1a0505; color: var(--danger); border: 1px solid #2a0a0a; }
+    .ctx-pill.easy   { background: #052010; color: var(--success); border: 1px solid #0a3a1a; }
+    .ctx-pill.medium { background: #1a1500; color: var(--warn);    border: 1px solid #2a2000; }
+    .ctx-pill.hard   { background: #1a0505; color: var(--danger);  border: 1px solid #2a0a0a; }
     .ctx-lang {
-      font-size: 9px;
-      color: var(--accent);
-      background: #001a20;
-      padding: 2px 8px;
-      border-radius: 20px;
-      border: 1px solid #002a35;
+      font-size: 9px; color: var(--accent); background: #001a20;
+      padding: 2px 8px; border-radius: 20px; border: 1px solid #002a35;
     }
 
-    /* ── Chat ── */
-    #chat {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    /* ── Screens shared styles ── */
+    .screen {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 28px 24px; text-align: center; gap: 16px;
     }
-
-    #chat::-webkit-scrollbar { width: 4px; }
-    #chat::-webkit-scrollbar-track { background: transparent; }
-    #chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-    .msg {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      animation: fadeUp 0.2s ease;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .msg-role {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 600;
-    }
-    .msg.mentor .msg-role { color: var(--accent); }
-    .msg.user .msg-role   { color: var(--success); }
-    .msg.system .msg-role { color: var(--accent2); }
-
-    .msg-bubble {
-      padding: 10px 13px;
-      border-radius: 8px;
-      line-height: 1.7;
-      max-width: 100%;
-      word-break: break-word;
-    }
-    .msg.mentor .msg-bubble {
-      background: var(--mentor-bg);
-      border: 1px solid #0a2540;
-      color: #b8d4f0;
-    }
-    .msg.user .msg-bubble {
-      background: var(--user-bg);
-      border: 1px solid #0a2a1a;
-      color: #a8d4b8;
-    }
-    .msg.system .msg-bubble {
-      background: #12082a;
-      border: 1px solid #2a1060;
-      color: #c4a8f0;
-      font-style: italic;
-    }
-
-    /* pseudo code block */
-    .pseudo-block {
-      background: #080420;
-      border: 1px solid #2a1060;
-      border-left: 3px solid var(--accent2);
-      border-radius: 6px;
-      padding: 10px 12px;
-      margin-top: 8px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      color: #d4b8ff;
-      white-space: pre-wrap;
-      line-height: 1.8;
-    }
-
-    /* typing indicator */
-    .typing-indicator {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 10px 13px;
-      background: var(--mentor-bg);
-      border: 1px solid #0a2540;
-      border-radius: 8px;
-      width: fit-content;
-    }
-    .typing-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: bounce 1.2s infinite;
-    }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes bounce {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-      30% { transform: translateY(-5px); opacity: 1; }
-    }
-
-    /* ── Start screen ── */
-    #start-screen {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-      gap: 16px;
-    }
-
-    .start-icon {
-      width: 64px;
-      height: 64px;
+    .screen-icon {
+      width: 64px; height: 64px;
       background: linear-gradient(135deg, #001a25, #0d082a);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
+      border: 1px solid var(--border); border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; font-size: 28px;
     }
-
-    .start-title {
-      font-family: 'Unbounded', sans-serif;
-      font-size: 14px;
-      font-weight: 900;
+    .screen-title {
+      font-family: 'Unbounded', sans-serif; font-size: 14px; font-weight: 900;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
+    .screen-desc { color: var(--muted); font-size: 11px; line-height: 1.7; max-width: 320px; }
+    .screen-desc span { color: var(--accent); }
 
-    .start-desc {
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.7;
-      max-width: 320px;
+    /* ── API Key Screen ── */
+    #key-screen { display: flex; }
+
+    .key-input-wrapper {
+      width: 100%; position: relative;
     }
-
-    .start-desc span {
-      color: var(--accent);
+    .key-input-label {
+      font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--muted); margin-bottom: 6px; text-align: left; display: block;
     }
-
-    #start-btn {
-      padding: 12px 28px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-family: 'Unbounded', sans-serif;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-    #start-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-    #start-btn:active { transform: translateY(0); }
-
-    .not-leetcode-msg {
-      color: var(--danger);
-      font-size: 11px;
-      background: #1a0505;
-      border: 1px solid #2a0a0a;
-      padding: 8px 14px;
-      border-radius: 6px;
-    }
-
-    /* ── Input area ── */
-    #input-area {
-      padding: 10px 12px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      display: none;
-      flex-shrink: 0;
-    }
-
-    .input-row {
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-    }
-
-    #user-input {
-      flex: 1;
+    #api-key-input {
+      width: 100%;
       background: #0a0f1a;
       border: 1px solid var(--border);
       border-radius: 8px;
       color: var(--text);
       font-family: 'IBM Plex Mono', monospace;
       font-size: 12px;
-      padding: 9px 12px;
-      resize: none;
-      min-height: 40px;
-      max-height: 100px;
-      line-height: 1.5;
+      padding: 10px 40px 10px 12px;
       outline: none;
       transition: border-color 0.15s;
+      letter-spacing: 1px;
+    }
+    #api-key-input:focus { border-color: var(--accent); }
+    #api-key-input::placeholder { color: var(--muted); letter-spacing: 0; }
+
+    #toggle-key-vis {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; font-size: 14px; padding: 2px;
+    }
+    #toggle-key-vis:hover { color: var(--accent); }
+
+    .key-help {
+      font-size: 10px; color: var(--muted); text-align: left;
+      line-height: 1.6; width: 100%;
+    }
+    .key-help a { color: var(--accent); text-decoration: none; }
+    .key-help a:hover { text-decoration: underline; }
+
+    #save-key-btn {
+      width: 100%; padding: 11px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 8px; color: #fff;
+      font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 11px;
+      letter-spacing: 0.5px; cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    #save-key-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    #save-key-btn:active { transform: translateY(0); }
+    #save-key-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    #key-error {
+      font-size: 10px; color: var(--danger);
+      background: #1a0505; border: 1px solid #2a0a0a;
+      padding: 7px 12px; border-radius: 6px; width: 100%; text-align: left;
+      display: none;
+    }
+    #key-success {
+      font-size: 10px; color: var(--success);
+      background: #051a0a; border: 1px solid #0a2a10;
+      padding: 7px 12px; border-radius: 6px; width: 100%; text-align: left;
+      display: none;
+    }
+
+    /* ── Start Screen ── */
+    #start-screen { display: none; }
+
+    #start-btn {
+      padding: 12px 28px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 8px; color: #fff;
+      font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 11px;
+      letter-spacing: 0.5px; cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    #start-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    #start-btn:active { transform: translateY(0); }
+    #start-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .error-msg {
+      color: var(--danger); font-size: 11px; background: #1a0505;
+      border: 1px solid #2a0a0a; padding: 8px 14px; border-radius: 6px; width: 100%;
+    }
+
+    /* ── Chat ── */
+    #chat {
+      flex: 1; overflow-y: auto; padding: 14px 16px;
+      display: none; flex-direction: column; gap: 12px;
+    }
+    #chat::-webkit-scrollbar { width: 4px; }
+    #chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .msg { display: flex; flex-direction: column; gap: 4px; animation: fadeUp 0.2s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .msg-role { font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+    .msg.mentor .msg-role { color: var(--accent); }
+    .msg.user   .msg-role { color: var(--success); }
+    .msg.system .msg-role { color: var(--accent2); }
+
+    .msg-bubble {
+      padding: 10px 13px; border-radius: 8px;
+      line-height: 1.7; max-width: 100%; word-break: break-word;
+    }
+    .msg.mentor .msg-bubble { background: var(--mentor-bg); border: 1px solid #0a2540; color: #b8d4f0; }
+    .msg.user   .msg-bubble { background: var(--user-bg);   border: 1px solid #0a2a1a; color: #a8d4b8; }
+    .msg.system .msg-bubble { background: #12082a; border: 1px solid #2a1060; color: #c4a8f0; font-style: italic; }
+
+    .pseudo-block {
+      background: #080420; border: 1px solid #2a1060;
+      border-left: 3px solid var(--accent2); border-radius: 6px;
+      padding: 10px 12px; margin-top: 8px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      color: #d4b8ff; white-space: pre-wrap; line-height: 1.8;
+    }
+
+    .typing-indicator {
+      display: flex; align-items: center; gap: 4px;
+      padding: 10px 13px; background: var(--mentor-bg);
+      border: 1px solid #0a2540; border-radius: 8px; width: fit-content;
+    }
+    .typing-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent); animation: bounce 1.2s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30%            { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ── Input area ── */
+    #input-area {
+      padding: 10px 12px; background: var(--surface);
+      border-top: 1px solid var(--border); display: none; flex-shrink: 0;
+    }
+    .input-row { display: flex; gap: 8px; align-items: flex-end; }
+    #user-input {
+      flex: 1; background: #0a0f1a; border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text);
+      font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+      padding: 9px 12px; resize: none; min-height: 40px; max-height: 100px;
+      line-height: 1.5; outline: none; transition: border-color 0.15s;
     }
     #user-input:focus { border-color: var(--accent); }
     #user-input::placeholder { color: var(--muted); }
-
     #send-btn {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      transition: opacity 0.15s, transform 0.1s;
-      flex-shrink: 0;
+      border: none; border-radius: 8px; color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; transition: opacity 0.15s, transform 0.1s; flex-shrink: 0;
     }
     #send-btn:hover { opacity: 0.85; transform: scale(1.05); }
     #send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-    /* refresh code btn */
     #refresh-btn {
-      font-size: 10px;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 4px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-family: 'IBM Plex Mono', monospace;
-      transition: all 0.15s;
-      margin-bottom: 6px;
+      font-size: 10px; background: transparent; border: 1px solid var(--border);
+      color: var(--muted); padding: 4px 10px; border-radius: 5px; cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace; transition: all 0.15s; margin-bottom: 6px;
     }
     #refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .hint-text { font-size: 9px; color: var(--muted); margin-top: 5px; text-align: center; }
 
-    .hint-text {
-      font-size: 9px;
-      color: var(--muted);
-      margin-top: 5px;
-      text-align: center;
+    /* ── Settings panel (slide-in) ── */
+    #settings-panel {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
     }
+    .settings-title {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 12px; font-weight: 700; color: var(--accent);
+    }
+    .settings-section { display: flex; flex-direction: column; gap: 6px; }
+    .settings-label {
+      font-size: 9px; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--muted);
+    }
+    .settings-key-row { display: flex; gap: 8px; align-items: center; }
+    .settings-key-display {
+      flex: 1; background: #0a0f1a; border: 1px solid var(--border);
+      border-radius: 6px; padding: 8px 10px; color: var(--muted);
+      font-size: 11px; font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    #change-key-btn {
+      padding: 6px 12px; background: transparent;
+      border: 1px solid var(--accent2); border-radius: 6px;
+      color: var(--accent2); font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    #change-key-btn:hover { background: var(--accent2); color: #fff; }
+    #back-btn {
+      padding: 8px 16px; background: transparent;
+      border: 1px solid var(--border); border-radius: 6px;
+      color: var(--muted); font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; cursor: pointer; transition: all 0.15s; align-self: flex-start;
+    }
+    #back-btn:hover { border-color: var(--accent); color: var(--accent); }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- ── Header (always visible) ── -->
   <div class="header">
     <div class="header-left">
-      <div class="logo">CM</div>
-      <div class="header-info">
-        <div class="header-title">CodeMentor</div>
+      <div class="logo">H</div>
+      <div>
+        <div class="header-title">Herupa</div>
         <div class="problem-name" id="problem-name">–</div>
       </div>
     </div>
-    <div class="attempt-badge">
-      <div class="attempt-label">Attempts</div>
-      <div class="attempt-dots">
-        <div class="dot" id="dot1"></div>
-        <div class="dot" id="dot2"></div>
-        <div class="dot" id="dot3"></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="attempt-badge">
+        <div class="attempt-label">Attempts</div>
+        <div class="attempt-dots">
+          <div class="dot" id="dot1"></div>
+          <div class="dot" id="dot2"></div>
+          <div class="dot" id="dot3"></div>
+        </div>
       </div>
+      <button id="settings-btn" title="Settings">⚙</button>
     </div>
   </div>
 
-  <!-- Context bar (shown after load) -->
+  <!-- ── Context bar ── -->
   <div id="context-bar">
     <div class="ctx-row">
       <span class="ctx-pill" id="diff-pill">–</span>
@@ -420,22 +358,71 @@
     </div>
   </div>
 
-  <!-- Start screen -->
-  <div id="start-screen">
-    <div class="start-icon">🧠</div>
-    <div class="start-title">CodeMentor</div>
-    <div class="start-desc">
+  <!-- ── SCREEN 1: API Key Setup ── -->
+  <div id="key-screen" class="screen">
+    <div class="screen-icon">🔑</div>
+    <div class="screen-title">Herupa</div>
+    <div class="screen-desc">
+      Herupa uses <span>Groq's free API</span> to power the AI mentor.<br>
+      Get your free key, paste it below — it's saved only on your device.
+    </div>
+
+    <div class="key-input-wrapper">
+      <label class="key-input-label" for="api-key-input">Your Groq API Key</label>
+      <input
+        id="api-key-input"
+        type="password"
+        placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxx"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button id="toggle-key-vis" title="Show/hide key">👁</button>
+    </div>
+
+    <div class="key-help">
+      👉 Get your free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a>
+      → Sign up → API Keys → Create key.<br><br>
+      🔒 Your key is stored only in Chrome's local storage on <strong>your computer</strong>. It is never sent anywhere except directly to Groq's API.
+    </div>
+
+    <div id="key-error"></div>
+    <div id="key-success"></div>
+
+    <button id="save-key-btn">Save Key & Continue →</button>
+  </div>
+
+  <!-- ── SCREEN 2: Start Session ── -->
+  <div id="start-screen" class="screen">
+    <div class="screen-icon">🧠</div>
+    <div class="screen-title">Herupa</div>
+    <div class="screen-desc">
       I'll analyze your <span>approach & code</span>, then ask guiding questions to lead you to the answer yourself.<br><br>
       After <span>3 attempts</span>, I'll reveal pseudocode — never the full solution.
     </div>
     <button id="start-btn">⚡ Start Session</button>
-    <div id="error-msg" style="display:none"></div>
+    <div id="error-msg" style="display:none" class="error-msg"></div>
   </div>
 
-  <!-- Chat (hidden initially) -->
-  <div id="chat" style="display:none"></div>
+  <!-- ── SCREEN 3: Chat ── -->
+  <div id="chat"></div>
 
-  <!-- Input area -->
+  <!-- ── SCREEN 4: Settings Panel ── -->
+  <div id="settings-panel">
+    <div class="settings-title">⚙ Herupa Settings</div>
+    <div class="settings-section">
+      <div class="settings-label">Groq API Key</div>
+      <div class="settings-key-row">
+        <div class="settings-key-display" id="key-display">–</div>
+        <button id="change-key-btn">Change</button>
+      </div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.6">
+        Stored locally in Chrome. Never shared with anyone except Groq's API.
+      </div>
+    </div>
+    <button id="back-btn">← Back</button>
+  </div>
+
+  <!-- ── Input area (shown during chat) ── -->
   <div id="input-area">
     <div style="display:flex;justify-content:flex-end;margin-bottom:4px">
       <button id="refresh-btn">↻ Re-read my code</button>
@@ -447,7 +434,6 @@
     <div class="hint-text">I won't give you the answer — but I'll get you there.</div>
   </div>
 
-  <script src="config.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

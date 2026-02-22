@@ -2,436 +2,963 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Herupa</title>
+  <title>HERUPA // NEON MENTOR</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Unbounded:wght@700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=JetBrains+Mono:wght@400;700&display=swap');
 
     :root {
-      --bg: #080b10;
-      --surface: #0d1117;
-      --border: #1a2030;
-      --accent: #00d4ff;
-      --accent2: #7c3aed;
-      --warn: #f59e0b;
-      --danger: #ef4444;
-      --success: #10b981;
-      --text: #c9d1d9;
-      --muted: #4a5568;
-      --mentor-bg: #0d1a2e;
-      --user-bg: #0d1a0d;
+      /* Cyberpunk neon palette */
+      --neon-pink: #ff2a6d;
+      --neon-blue: #05d9e8;
+      --neon-purple: #b967ff;
+      --neon-green: #00ff9f;
+      --neon-yellow: #fff500;
+      --dark-bg: #0d0221;
+      --darker-bg: #0a0015;
+      --glow-pink: rgba(255, 42, 109, 0.5);
+      --glow-blue: rgba(5, 217, 232, 0.5);
+      --glow-purple: rgba(185, 103, 255, 0.5);
+      
+      /* Grid overlay */
+      --grid-color: rgba(5, 217, 232, 0.1);
+      
+      /* Text colors */
+      --text-primary: #e0f2fe;
+      --text-secondary: #a0a8b8;
+      --text-glitch: #ffffff;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       width: 480px;
       height: 600px;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'IBM Plex Mono', monospace;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
 
-    /* ── Header ── */
+    /* Cyberpunk grid background */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Scanline effect */
+    body::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(180deg, 
+        rgba(5, 217, 232, 0.1) 0%, 
+        transparent 100%);
+      animation: scan 8s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes scan {
+      0% { top: -200px; }
+      100% { top: 100%; }
+    }
+
+    /* All content above the grid */
+    .header, .context-bar, .screen, .chat-container, .input-area, .settings-panel {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header with neon border */
     .header {
       padding: 12px 16px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
+      background: rgba(10, 0, 21, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--neon-blue);
+      box-shadow: 0 0 20px var(--glow-blue);
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
-    }
-    .header-left { display: flex; align-items: center; gap: 10px; }
-    .logo {
-      width: 32px; height: 32px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: 11px;
-      color: #fff; flex-shrink: 0;
-    }
-    .header-title {
-      font-family: 'Unbounded', sans-serif; font-size: 11px;
-      font-weight: 700; color: var(--accent); letter-spacing: 0.5px;
-    }
-    .problem-name {
-      font-size: 10px; color: var(--muted); margin-top: 1px;
-      max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .attempt-badge { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
-    .attempt-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-    .attempt-dots { display: flex; gap: 4px; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--muted); background: transparent; transition: all 0.3s; }
-    .dot.used   { background: var(--warn);    border-color: var(--warn); }
-    .dot.pseudo { background: var(--accent2); border-color: var(--accent2); }
-
-    /* settings gear in header */
-    #settings-btn {
-      background: transparent; border: 1px solid var(--border);
-      color: var(--muted); width: 28px; height: 28px; border-radius: 6px;
-      cursor: pointer; font-size: 13px; display: flex; align-items: center;
-      justify-content: center; transition: all 0.15s; flex-shrink: 0;
-    }
-    #settings-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* ── Context bar ── */
-    #context-bar {
-      padding: 8px 16px; background: #050810;
-      border-bottom: 1px solid var(--border); flex-shrink: 0; display: none;
-    }
-    .ctx-row { display: flex; align-items: center; justify-content: space-between; }
-    .ctx-pill {
-      font-size: 9px; padding: 2px 8px; border-radius: 20px;
-      text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
-    }
-    .ctx-pill.easy   { background: #052010; color: var(--success); border: 1px solid #0a3a1a; }
-    .ctx-pill.medium { background: #1a1500; color: var(--warn);    border: 1px solid #2a2000; }
-    .ctx-pill.hard   { background: #1a0505; color: var(--danger);  border: 1px solid #2a0a0a; }
-    .ctx-lang {
-      font-size: 9px; color: var(--accent); background: #001a20;
-      padding: 2px 8px; border-radius: 20px; border: 1px solid #002a35;
+      position: relative;
+      z-index: 2;
     }
 
-    /* ── Screens shared styles ── */
-    .screen {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 28px 24px; text-align: center; gap: 16px;
-    }
-    .screen-icon {
-      width: 64px; height: 64px;
-      background: linear-gradient(135deg, #001a25, #0d082a);
-      border: 1px solid var(--border); border-radius: 16px;
-      display: flex; align-items: center; justify-content: center; font-size: 28px;
-    }
-    .screen-title {
-      font-family: 'Unbounded', sans-serif; font-size: 14px; font-weight: 900;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .screen-desc { color: var(--muted); font-size: 11px; line-height: 1.7; max-width: 320px; }
-    .screen-desc span { color: var(--accent); }
-
-    /* ── API Key Screen ── */
-    #key-screen { display: flex; }
-
-    .key-input-wrapper {
-      width: 100%; position: relative;
-    }
-    .key-input-label {
-      font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px;
-      color: var(--muted); margin-bottom: 6px; text-align: left; display: block;
-    }
-    #api-key-input {
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
       width: 100%;
-      background: #0a0f1a;
-      border: 1px solid var(--border);
+      height: 2px;
+      background: linear-gradient(90deg, 
+        transparent, 
+        var(--neon-pink), 
+        var(--neon-blue), 
+        var(--neon-purple), 
+        transparent);
+      animation: borderPulse 3s infinite;
+    }
+
+    @keyframes borderPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .logo-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
       border-radius: 8px;
-      color: var(--text);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      padding: 10px 40px 10px 12px;
-      outline: none;
-      transition: border-color 0.15s;
-      letter-spacing: 1px;
-    }
-    #api-key-input:focus { border-color: var(--accent); }
-    #api-key-input::placeholder { color: var(--muted); letter-spacing: 0; }
-
-    #toggle-key-vis {
-      position: absolute; right: 10px; top: 50%;
-      transform: translateY(-50%);
-      background: none; border: none; color: var(--muted);
-      cursor: pointer; font-size: 14px; padding: 2px;
-    }
-    #toggle-key-vis:hover { color: var(--accent); }
-
-    .key-help {
-      font-size: 10px; color: var(--muted); text-align: left;
-      line-height: 1.6; width: 100%;
-    }
-    .key-help a { color: var(--accent); text-decoration: none; }
-    .key-help a:hover { text-decoration: underline; }
-
-    #save-key-btn {
-      width: 100%; padding: 11px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; border-radius: 8px; color: #fff;
-      font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 11px;
-      letter-spacing: 0.5px; cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-    #save-key-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-    #save-key-btn:active { transform: translateY(0); }
-    #save-key-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-    #key-error {
-      font-size: 10px; color: var(--danger);
-      background: #1a0505; border: 1px solid #2a0a0a;
-      padding: 7px 12px; border-radius: 6px; width: 100%; text-align: left;
-      display: none;
-    }
-    #key-success {
-      font-size: 10px; color: var(--success);
-      background: #051a0a; border: 1px solid #0a2a10;
-      padding: 7px 12px; border-radius: 6px; width: 100%; text-align: left;
-      display: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 20px;
+      color: black;
+      text-shadow: 0 0 10px white;
+      box-shadow: 0 0 20px var(--neon-pink);
+      animation: logoPulse 2s infinite;
     }
 
-    /* ── Start Screen ── */
-    #start-screen { display: none; }
-
-    #start-btn {
-      padding: 12px 28px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; border-radius: 8px; color: #fff;
-      font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 11px;
-      letter-spacing: 0.5px; cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-    #start-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-    #start-btn:active { transform: translateY(0); }
-    #start-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-    .error-msg {
-      color: var(--danger); font-size: 11px; background: #1a0505;
-      border: 1px solid #2a0a0a; padding: 8px 14px; border-radius: 6px; width: 100%;
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: 0 0 20px var(--neon-pink); }
+      50% { box-shadow: 0 0 40px var(--neon-blue); }
     }
 
-    /* ── Chat ── */
-    #chat {
-      flex: 1; overflow-y: auto; padding: 14px 16px;
-      display: none; flex-direction: column; gap: 12px;
-    }
-    #chat::-webkit-scrollbar { width: 4px; }
-    #chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-    .msg { display: flex; flex-direction: column; gap: 4px; animation: fadeUp 0.2s ease; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .msg-role { font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
-    .msg.mentor .msg-role { color: var(--accent); }
-    .msg.user   .msg-role { color: var(--success); }
-    .msg.system .msg-role { color: var(--accent2); }
-
-    .msg-bubble {
-      padding: 10px 13px; border-radius: 8px;
-      line-height: 1.7; max-width: 100%; word-break: break-word;
-    }
-    .msg.mentor .msg-bubble { background: var(--mentor-bg); border: 1px solid #0a2540; color: #b8d4f0; }
-    .msg.user   .msg-bubble { background: var(--user-bg);   border: 1px solid #0a2a1a; color: #a8d4b8; }
-    .msg.system .msg-bubble { background: #12082a; border: 1px solid #2a1060; color: #c4a8f0; font-style: italic; }
-
-    .pseudo-block {
-      background: #080420; border: 1px solid #2a1060;
-      border-left: 3px solid var(--accent2); border-radius: 6px;
-      padding: 10px 12px; margin-top: 8px;
-      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-      color: #d4b8ff; white-space: pre-wrap; line-height: 1.8;
+    .app-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 16px;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      position: relative;
     }
 
-    .typing-indicator {
-      display: flex; align-items: center; gap: 4px;
-      padding: 10px 13px; background: var(--mentor-bg);
-      border: 1px solid #0a2540; border-radius: 8px; width: fit-content;
-    }
-    .typing-dot {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: var(--accent); animation: bounce 1.2s infinite;
-    }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes bounce {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-      30%            { transform: translateY(-5px); opacity: 1; }
+    .app-title::before {
+      content: 'HERUPA';
+      position: absolute;
+      left: 2px;
+      top: 2px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0.3;
+      filter: blur(4px);
     }
 
-    /* ── Input area ── */
-    #input-area {
-      padding: 10px 12px; background: var(--surface);
-      border-top: 1px solid var(--border); display: none; flex-shrink: 0;
+    .problem-name {
+      font-size: 10px;
+      color: var(--neon-green);
+      text-shadow: 0 0 5px var(--neon-green);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .input-row { display: flex; gap: 8px; align-items: flex-end; }
-    #user-input {
-      flex: 1; background: #0a0f1a; border: 1px solid var(--border);
-      border-radius: 8px; color: var(--text);
-      font-family: 'IBM Plex Mono', monospace; font-size: 12px;
-      padding: 9px 12px; resize: none; min-height: 40px; max-height: 100px;
-      line-height: 1.5; outline: none; transition: border-color 0.15s;
-    }
-    #user-input:focus { border-color: var(--accent); }
-    #user-input::placeholder { color: var(--muted); }
-    #send-btn {
-      width: 40px; height: 40px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; border-radius: 8px; color: #fff; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; transition: opacity 0.15s, transform 0.1s; flex-shrink: 0;
-    }
-    #send-btn:hover { opacity: 0.85; transform: scale(1.05); }
-    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-    #refresh-btn {
-      font-size: 10px; background: transparent; border: 1px solid var(--border);
-      color: var(--muted); padding: 4px 10px; border-radius: 5px; cursor: pointer;
-      font-family: 'IBM Plex Mono', monospace; transition: all 0.15s; margin-bottom: 6px;
-    }
-    #refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .hint-text { font-size: 9px; color: var(--muted); margin-top: 5px; text-align: center; }
 
-    /* ── Settings panel (slide-in) ── */
-    #settings-panel {
-      display: none;
+    /* Glitch effect for problem name */
+    .problem-name:hover {
+      animation: glitch 0.3s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); color: var(--neon-pink); }
+      40% { transform: translate(-2px, -2px); color: var(--neon-blue); }
+      60% { transform: translate(2px, 2px); color: var(--neon-purple); }
+      80% { transform: translate(2px, -2px); color: var(--neon-green); }
+      100% { transform: translate(0); }
+    }
+
+    /* Neon dots */
+    .attempt-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .attempt-badge {
+      display: flex;
       flex-direction: column;
-      gap: 14px;
-      padding: 20px;
+      align-items: flex-end;
+    }
+
+    .attempt-label {
+      font-size: 8px;
+      color: var(--neon-blue);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 5px var(--neon-blue);
+    }
+
+    .dots-wrapper {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 0;
+      background: transparent;
+      border: 2px solid var(--neon-blue);
+      transform: rotate(45deg);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--glow-blue);
+    }
+
+    .dot.used {
+      background: var(--neon-pink);
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 20px var(--neon-pink);
+      transform: rotate(0deg) scale(1.2);
+    }
+
+    .dot.pseudo {
+      background: var(--neon-purple);
+      border-color: var(--neon-purple);
+      box-shadow: 0 0 20px var(--neon-purple);
+      transform: rotate(0deg) scale(1.2);
+    }
+
+    .settings-btn {
+      background: transparent;
+      border: 2px solid var(--neon-purple);
+      color: var(--neon-purple);
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      text-shadow: 0 0 10px var(--neon-purple);
+      box-shadow: 0 0 15px var(--glow-purple);
+    }
+
+    .settings-btn:hover {
+      background: var(--neon-purple);
+      color: black;
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 0 30px var(--neon-purple);
+    }
+
+    /* Context bar with neon */
+    .context-bar {
+      padding: 8px 16px;
+      background: rgba(0, 0, 0, 0.8);
+      border-bottom: 1px solid var(--neon-pink);
+      box-shadow: 0 0 15px var(--glow-pink);
+      flex-shrink: 0;
+      display: none;
+      position: relative;
+    }
+
+    .context-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .difficulty-pill {
+      font-size: 9px;
+      font-weight: bold;
+      padding: 4px 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .difficulty-pill.easy {
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+      box-shadow: 0 0 15px var(--neon-green);
+    }
+
+    .difficulty-pill.medium {
+      color: var(--neon-yellow);
+      border: 1px solid var(--neon-yellow);
+      box-shadow: 0 0 15px var(--neon-yellow);
+    }
+
+    .difficulty-pill.hard {
+      color: var(--neon-pink);
+      border: 1px solid var(--neon-pink);
+      box-shadow: 0 0 15px var(--neon-pink);
+    }
+
+    .difficulty-pill::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      20% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .platform-tag {
+      color: var(--neon-blue);
+      font-size: 9px;
+      text-shadow: 0 0 8px var(--neon-blue);
+    }
+
+    .language-pill {
+      font-size: 9px;
+      color: black;
+      background: var(--neon-purple);
+      padding: 4px 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px var(--neon-purple);
+    }
+
+    /* Screens with neon glow */
+    .screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      gap: 20px;
+      animation: flicker 0.5s ease;
+      position: relative;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0; }
+      10% { opacity: 0; }
+      20% { opacity: 1; }
+      30% { opacity: 0; }
+      40% { opacity: 1; }
+      70% { opacity: 1; }
+      80% { opacity: 0; }
+      90% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    .screen-icon {
+      width: 90px;
+      height: 90px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 3px solid var(--neon-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 45px;
+      box-shadow: 0 0 30px var(--neon-blue);
+      transform: rotate(45deg);
+      animation: iconFloat 3s infinite;
+    }
+
+    .screen-icon > * {
+      transform: rotate(-45deg);
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: rotate(45deg) scale(1); }
+      50% { transform: rotate(45deg) scale(1.1); }
+    }
+
+    .screen-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--neon-pink);
+      text-shadow: 
+        0 0 10px var(--neon-pink),
+        0 0 20px var(--neon-pink),
+        2px 2px 0 var(--neon-blue),
+        -2px -2px 0 var(--neon-purple);
+      letter-spacing: 4px;
+    }
+
+    .screen-description {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.8;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border: 1px solid var(--neon-blue);
+      box-shadow: inset 0 0 20px rgba(5, 217, 232, 0.2);
+    }
+
+    .screen-description span {
+      color: var(--neon-green);
+      text-shadow: 0 0 8px var(--neon-green);
+      font-weight: bold;
+    }
+
+    /* Cyberpunk input */
+    .input-wrapper {
+      width: 100%;
+      position: relative;
+    }
+
+    .input-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--neon-blue);
+      text-shadow: 0 0 5px var(--neon-blue);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .key-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      border: 3px solid var(--neon-purple);
+      color: var(--neon-green);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 15px 50px 15px 15px;
+      outline: none;
+      box-shadow: 0 0 25px var(--neon-purple);
+      transition: all 0.3s ease;
+    }
+
+    .key-input:focus {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 35px var(--neon-blue);
+    }
+
+    .key-input::placeholder {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--neon-purple);
+      cursor: pointer;
+      font-size: 18px;
+      text-shadow: 0 0 10px var(--neon-purple);
+    }
+
+    /* Neon button */
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: transparent;
+      border: 3px solid var(--neon-pink);
+      color: var(--neon-pink);
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-shadow: 0 0 10px var(--neon-pink);
+      box-shadow: 0 0 20px var(--glow-pink);
+    }
+
+    .btn-primary:hover {
+      background: var(--neon-pink);
+      color: black;
+      text-shadow: none;
+      transform: scale(1.02);
+      box-shadow: 0 0 40px var(--neon-pink);
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-secondary {
+      padding: 12px 24px;
+      background: transparent;
+      border: 2px solid var(--neon-blue);
+      color: var(--neon-blue);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px var(--glow-blue);
+    }
+
+    .btn-secondary:hover {
+      background: var(--neon-blue);
+      color: black;
+      box-shadow: 0 0 30px var(--neon-blue);
+    }
+
+    /* Chat messages with neon */
+    .chat-container {
       flex: 1;
       overflow-y: auto;
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      background: rgba(0, 0, 0, 0.7);
     }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      animation: messageGlitch 0.3s ease;
+    }
+
+    @keyframes messageGlitch {
+      0% { opacity: 0; transform: translateX(-20px); filter: blur(2px); }
+      100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+    }
+
+    .message-role {
+      font-size: 9px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .message.mentor .message-role { 
+      color: var(--neon-blue);
+      text-shadow: 0 0 8px var(--neon-blue);
+    }
+    .message.user .message-role { 
+      color: var(--neon-green);
+      text-shadow: 0 0 8px var(--neon-green);
+    }
+    .message.system .message-role { 
+      color: var(--neon-yellow);
+      text-shadow: 0 0 8px var(--neon-yellow);
+    }
+
+    .message-bubble {
+      padding: 14px 16px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid;
+      line-height: 1.7;
+      font-size: 11px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .message.mentor .message-bubble {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 20px rgba(5, 217, 232, 0.3);
+    }
+
+    .message.user .message-bubble {
+      border-color: var(--neon-green);
+      box-shadow: 0 0 20px rgba(0, 255, 159, 0.3);
+      text-align: right;
+    }
+
+    .message.system .message-bubble {
+      border-color: var(--neon-yellow);
+      box-shadow: 0 0 20px rgba(255, 245, 0, 0.3);
+      border-style: dashed;
+    }
+
+    /* Pseudocode with matrix effect */
+    .pseudo-container {
+      background: black;
+      border: 3px solid var(--neon-green);
+      padding: 16px;
+      margin-top: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--neon-green);
+      text-shadow: 0 0 5px var(--neon-green);
+      box-shadow: 0 0 30px var(--neon-green);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pseudo-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, 
+        transparent, 
+        var(--neon-green), 
+        transparent);
+      animation: matrixScan 2s linear infinite;
+    }
+
+    @keyframes matrixScan {
+      0% { top: -2px; }
+      100% { top: 100%; }
+    }
+
+    /* Typing indicator */
+    .typing {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid var(--neon-purple);
+      width: fit-content;
+      box-shadow: 0 0 20px var(--neon-purple);
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--neon-purple);
+      border-radius: 0;
+      transform: rotate(45deg);
+      animation: typingGlitch 1s infinite;
+    }
+
+    @keyframes typingGlitch {
+      0%, 100% { 
+        background: var(--neon-purple);
+        box-shadow: 0 0 15px var(--neon-purple);
+        transform: rotate(45deg) scale(1);
+      }
+      50% { 
+        background: var(--neon-blue);
+        box-shadow: 0 0 25px var(--neon-blue);
+        transform: rotate(0deg) scale(1.5);
+      }
+    }
+
+    /* Input area */
+    .input-area {
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.9);
+      border-top: 3px solid var(--neon-pink);
+      box-shadow: 0 -10px 30px rgba(255, 42, 109, 0.3);
+      display: none;
+      flex-shrink: 0;
+    }
+
+    .refresh-btn {
+      background: transparent;
+      border: 2px solid var(--neon-blue);
+      color: var(--neon-blue);
+      padding: 6px 16px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px var(--glow-blue);
+    }
+
+    .refresh-btn:hover {
+      background: var(--neon-blue);
+      color: black;
+    }
+
+    .user-textarea {
+      flex: 1;
+      background: black;
+      border: 3px solid var(--neon-purple);
+      color: var(--neon-green);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 12px;
+      resize: none;
+      outline: none;
+      box-shadow: 0 0 20px var(--neon-purple);
+    }
+
+    .user-textarea:focus {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 30px var(--neon-blue);
+    }
+
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      background: transparent;
+      border: 3px solid var(--neon-pink);
+      color: var(--neon-pink);
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 15px var(--neon-pink);
+      box-shadow: 0 0 20px var(--glow-pink);
+    }
+
+    .send-btn:hover:not(:disabled) {
+      background: var(--neon-pink);
+      color: black;
+      transform: scale(1.1);
+    }
+
+    /* Settings panel */
+    .settings-panel {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      padding: 24px;
+      flex: 1;
+      background: rgba(0, 0, 0, 0.9);
+    }
+
     .settings-title {
-      font-family: 'Unbounded', sans-serif;
-      font-size: 12px; font-weight: 700; color: var(--accent);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      color: var(--neon-yellow);
+      text-shadow: 0 0 15px var(--neon-yellow);
+      text-transform: uppercase;
+      letter-spacing: 4px;
     }
-    .settings-section { display: flex; flex-direction: column; gap: 6px; }
-    .settings-label {
-      font-size: 9px; text-transform: uppercase;
-      letter-spacing: 1.5px; color: var(--muted);
+
+    .settings-section {
+      border: 2px solid var(--neon-blue);
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 20px var(--glow-blue);
     }
-    .settings-key-row { display: flex; gap: 8px; align-items: center; }
-    .settings-key-display {
-      flex: 1; background: #0a0f1a; border: 1px solid var(--border);
-      border-radius: 6px; padding: 8px 10px; color: var(--muted);
-      font-size: 11px; font-family: 'IBM Plex Mono', monospace;
-      letter-spacing: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+
+    .key-display {
+      background: black;
+      border: 2px solid var(--neon-purple);
+      padding: 12px;
+      color: var(--neon-green);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      box-shadow: inset 0 0 15px var(--neon-purple);
     }
-    #change-key-btn {
-      padding: 6px 12px; background: transparent;
-      border: 1px solid var(--accent2); border-radius: 6px;
-      color: var(--accent2); font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+
+    /* Alerts */
+    .alert-error {
+      background: rgba(255, 42, 109, 0.2);
+      border: 2px solid var(--neon-pink);
+      color: var(--neon-pink);
+      padding: 10px 14px;
+      text-shadow: 0 0 8px var(--neon-pink);
     }
-    #change-key-btn:hover { background: var(--accent2); color: #fff; }
-    #back-btn {
-      padding: 8px 16px; background: transparent;
-      border: 1px solid var(--border); border-radius: 6px;
-      color: var(--muted); font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px; cursor: pointer; transition: all 0.15s; align-self: flex-start;
+
+    .alert-success {
+      background: rgba(0, 255, 159, 0.2);
+      border: 2px solid var(--neon-green);
+      color: var(--neon-green);
+      padding: 10px 14px;
+      text-shadow: 0 0 8px var(--neon-green);
     }
-    #back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hint-text {
+      color: var(--neon-purple);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-top: 10px;
+      text-shadow: 0 0 8px var(--neon-purple);
+    }
+
+    /* Links */
+    a {
+      color: var(--neon-pink);
+      text-decoration: none;
+      border-bottom: 2px solid var(--neon-pink);
+      text-shadow: 0 0 8px var(--neon-pink);
+    }
+
+    a:hover {
+      color: black;
+      background: var(--neon-pink);
+    }
   </style>
 </head>
 <body>
-
-  <!-- ── Header (always visible) ── -->
+  <!-- Header (same structure, just class names updated) -->
   <div class="header">
-    <div class="header-left">
+    <div class="logo-wrapper">
       <div class="logo">H</div>
       <div>
-        <div class="header-title">Herupa</div>
-        <div class="problem-name" id="problem-name">–</div>
+        <div class="app-title">HERUPA</div>
+        <div class="problem-name" id="problem-name">// SYSTEM_READY.exe</div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
+    
+    <div class="attempt-container">
       <div class="attempt-badge">
-        <div class="attempt-label">Attempts</div>
-        <div class="attempt-dots">
+        <div class="attempt-label">ATTEMPTS</div>
+        <div class="dots-wrapper">
           <div class="dot" id="dot1"></div>
           <div class="dot" id="dot2"></div>
           <div class="dot" id="dot3"></div>
         </div>
       </div>
-      <button id="settings-btn" title="Settings">⚙</button>
+      <button class="settings-btn" id="settings-btn">⚡</button>
     </div>
   </div>
 
-  <!-- ── Context bar ── -->
-  <div id="context-bar">
-    <div class="ctx-row">
-      <span class="ctx-pill" id="diff-pill">–</span>
-      <span style="color:var(--muted);font-size:10px" id="ctx-title"></span>
-      <span class="ctx-lang" id="lang-pill">–</span>
+  <!-- Context Bar -->
+  <div class="context-bar" id="context-bar">
+    <div class="context-row">
+      <span class="difficulty-pill" id="diff-pill">EASY</span>
+      <span class="platform-tag" id="platform">>_LEETCODE</span>
+      <span class="language-pill" id="lang-pill">PYTHON</span>
     </div>
   </div>
 
-  <!-- ── SCREEN 1: API Key Setup ── -->
+  <!-- API Key Screen -->
   <div id="key-screen" class="screen">
     <div class="screen-icon">🔑</div>
-    <div class="screen-title">Herupa</div>
-    <div class="screen-desc">
-      Herupa uses <span>Groq's free API</span> to power the AI mentor.<br>
-      Get your free key, paste it below — it's saved only on your device.
+    <div class="screen-title">ACCESS_GRANTED</div>
+    <div class="screen-description">
+      <span>>_GROQ_API</span> required for neural interface.<br>
+      Insert key to initialize.
     </div>
 
-    <div class="key-input-wrapper">
-      <label class="key-input-label" for="api-key-input">Your Groq API Key</label>
+    <div class="input-wrapper">
+      <label class="input-label" for="api-key-input">// API_KEY</label>
       <input
+        class="key-input"
         id="api-key-input"
         type="password"
-        placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxx"
-        autocomplete="off"
-        spellcheck="false"
+        placeholder="gsk_xxxxxxxxxxxxxxxx"
       />
-      <button id="toggle-key-vis" title="Show/hide key">👁</button>
+      <button class="toggle-visibility" id="toggle-key-vis">👁</button>
     </div>
 
-    <div class="key-help">
-      👉 Get your free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a>
-      → Sign up → API Keys → Create key.<br><br>
-      🔒 Your key is stored only in Chrome's local storage on <strong>your computer</strong>. It is never sent anywhere except directly to Groq's API.
+    <div class="key-help screen-description" style="text-align: left;">
+      ⚡ Get key from <a href="https://console.groq.com" target="_blank">console.groq.com</a><br>
+      🔒 Encrypted locally
     </div>
 
-    <div id="key-error"></div>
-    <div id="key-success"></div>
+    <div class="alert-error" id="key-error"></div>
+    <div class="alert-success" id="key-success"></div>
 
-    <button id="save-key-btn">Save Key & Continue →</button>
+    <button class="btn-primary" id="save-key-btn">INITIALIZE</button>
   </div>
 
-  <!-- ── SCREEN 2: Start Session ── -->
+  <!-- Start Screen -->
   <div id="start-screen" class="screen">
     <div class="screen-icon">🧠</div>
-    <div class="screen-title">Herupa</div>
-    <div class="screen-desc">
-      I'll analyze your <span>approach & code</span>, then ask guiding questions to lead you to the answer yourself.<br><br>
-      After <span>3 attempts</span>, I'll reveal pseudocode — never the full solution.
+    <div class="screen-title">BOOT_SEQUENCE</div>
+    <div class="screen-description">
+      <span>NEURAL_LINK</span> established.<br>
+      I'll guide you through the grid.<br>
+      <span>3 attempts</span> until pseudocode release.
     </div>
-    <button id="start-btn">⚡ Start Session</button>
-    <div id="error-msg" style="display:none" class="error-msg"></div>
+    <button class="btn-primary" id="start-btn" style="width: auto; padding: 16px 40px;">
+      ⚡ ACTIVATE
+    </button>
+    <div class="alert-error" id="error-msg"></div>
   </div>
 
-  <!-- ── SCREEN 3: Chat ── -->
-  <div id="chat"></div>
+  <!-- Chat Container -->
+  <div id="chat" class="chat-container"></div>
 
-  <!-- ── SCREEN 4: Settings Panel ── -->
-  <div id="settings-panel">
-    <div class="settings-title">⚙ Herupa Settings</div>
+  <!-- Settings Panel -->
+  <div id="settings-panel" class="settings-panel">
+    <div class="settings-title">// SYSTEM_SETTINGS</div>
+    
     <div class="settings-section">
-      <div class="settings-label">Groq API Key</div>
-      <div class="settings-key-row">
-        <div class="settings-key-display" id="key-display">–</div>
-        <button id="change-key-btn">Change</button>
-      </div>
-      <div style="font-size:10px;color:var(--muted);line-height:1.6">
-        Stored locally in Chrome. Never shared with anyone except Groq's API.
+      <div style="color: var(--neon-blue); margin-bottom: 12px;">API_CONFIG</div>
+      <div class="key-display" id="key-display">••••••••••••••••</div>
+      <button class="btn-secondary" id="change-key-btn" style="width: 100%; margin-top: 12px;">
+        RECONFIGURE
+      </button>
+    </div>
+
+    <div class="settings-section">
+      <div style="color: var(--neon-blue); margin-bottom: 8px;">SYSTEM_INFO</div>
+      <div style="color: var(--text-secondary);">
+        HERUPA v2.0 // CYBER<br>
+        STATUS: ONLINE<br>
+        ENCRYPTION: ACTIVE
       </div>
     </div>
-    <button id="back-btn">← Back</button>
+
+    <button class="btn-secondary" id="back-btn">
+      ← RETURN
+    </button>
   </div>
 
-  <!-- ── Input area (shown during chat) ── -->
-  <div id="input-area">
-    <div style="display:flex;justify-content:flex-end;margin-bottom:4px">
-      <button id="refresh-btn">↻ Re-read my code</button>
+  <!-- Input Area -->
+  <div id="input-area" class="input-area">
+    <div style="display: flex; justify-content: flex-end;">
+      <button class="refresh-btn" id="refresh-btn">
+        ↻ RE_READ
+      </button>
     </div>
-    <div class="input-row">
-      <textarea id="user-input" placeholder="Share your approach or ask a question..." rows="1"></textarea>
-      <button id="send-btn">↑</button>
+    <div class="input-row" style="display: flex; gap: 10px;">
+      <textarea 
+        class="user-textarea" 
+        id="user-input" 
+        placeholder=">_ input neural pattern..."
+        rows="1"
+      ></textarea>
+      <button class="send-btn" id="send-btn">→</button>
     </div>
-    <div class="hint-text">I won't give you the answer — but I'll get you there.</div>
+    <div class="hint-text">// NO_SPOILERS // JUST_GUIDANCE</div>
   </div>
 
   <script src="popup.js"></script>

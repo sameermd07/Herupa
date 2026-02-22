@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Herupa – Socratic DSA Helper",
+  "name": "Herupa – Socratic DSA Helper(new version)",
   "version": "2.0",
   "description": "AI mentor for LeetCode & TakeUForward. Guides you to solve problems yourself through Socratic questioning.",
   "permissions": ["activeTab", "scripting", "storage"],

@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "CodeMentor – Socratic LeetCode Helper",
+  "version": "1.0",
+  "description": "AI mentor that guides you to solve problems yourself. Never gives answers, only asks the right questions.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [{
+    "matches": ["https://leetcode.com/problems/*"],
+    "js": ["content.js"]
+  }]
+}
